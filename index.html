@@ -446,6 +446,252 @@
 
   gtag('config', 'G-V3D345KDXG');
 </script>
+
+<!-- Enhanced Google Analytics Event Tracking -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Track App Store download link clicks
+    const appStoreLinks = document.querySelectorAll('a[href*="apps.apple.com"]');
+    appStoreLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const linkText = this.textContent.trim() || this.getAttribute('aria-label') || 'App Store Link';
+            const linkLocation = this.closest('section')?.className || this.closest('nav') ? 'navigation' : 'unknown';
+            
+            gtag('event', 'click', {
+                'event_category': 'download',
+                'event_label': 'Mac App Store - ' + linkLocation,
+                'value': 1
+            });
+            
+            // Also send enhanced ecommerce event
+            gtag('event', 'begin_checkout', {
+                'currency': 'USD',
+                'value': 0,
+                'items': [{
+                    'item_id': 'checkpoints_mac_app',
+                    'item_name': 'Checkpoints for Claude Code',
+                    'item_category': 'Software',
+                    'item_variant': 'Mac',
+                    'price': 0,
+                    'quantity': 1
+                }]
+            });
+        });
+    });
+
+    // Track internal navigation link clicks
+    const navLinks = document.querySelectorAll('a[href^="#"]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const destination = this.getAttribute('href');
+            const linkText = this.textContent.trim();
+            
+            gtag('event', 'click', {
+                'event_category': 'navigation',
+                'event_label': linkText + ' -> ' + destination
+            });
+        });
+    });
+
+    // Track external link clicks (mailto, etc.)
+    const mailtoLinks = document.querySelectorAll('a[href^="mailto:"]');
+    mailtoLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            gtag('event', 'click', {
+                'event_category': 'contact',
+                'event_label': 'Email - ' + this.getAttribute('href').replace('mailto:', '')
+            });
+        });
+    });
+
+    // Track YouTube video interactions
+    let videoPlayed = false;
+    let videoProgress = {};
+    
+    // YouTube API callback
+    window.onYouTubeIframeAPIReady = function() {
+        const iframe = document.querySelector('iframe[src*="youtube.com"]');
+        if (iframe) {
+            new YT.Player(iframe, {
+                events: {
+                    'onStateChange': onPlayerStateChange,
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+    };
+
+    // Load YouTube API
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    function onPlayerReady(event) {
+        // Track when video is loaded
+        gtag('event', 'video_load', {
+            'event_category': 'video',
+            'event_label': 'Demo Video Ready'
+        });
+    }
+
+    function onPlayerStateChange(event) {
+        const playerStatus = event.data;
+        const videoId = '0lNL4K-75PE';
+        
+        switch(playerStatus) {
+            case YT.PlayerState.PLAYING:
+                if (!videoPlayed) {
+                    gtag('event', 'video_play', {
+                        'event_category': 'video',
+                        'event_label': 'Demo Video - First Play',
+                        'value': 1
+                    });
+                    videoPlayed = true;
+                }
+                
+                // Track progress at 25%, 50%, 75%, 100%
+                const duration = event.target.getDuration();
+                const checkpoints = [0.25, 0.5, 0.75, 1.0];
+                
+                const trackProgress = setInterval(() => {
+                    const currentTime = event.target.getCurrentTime();
+                    const progress = currentTime / duration;
+                    
+                    checkpoints.forEach(checkpoint => {
+                        if (progress >= checkpoint && !videoProgress[checkpoint]) {
+                            videoProgress[checkpoint] = true;
+                            gtag('event', 'video_progress', {
+                                'event_category': 'video',
+                                'event_label': 'Demo Video - ' + (checkpoint * 100) + '% watched',
+                                'value': checkpoint * 100
+                            });
+                        }
+                    });
+                    
+                    if (event.target.getPlayerState() !== YT.PlayerState.PLAYING) {
+                        clearInterval(trackProgress);
+                    }
+                }, 1000);
+                break;
+                
+            case YT.PlayerState.PAUSED:
+                gtag('event', 'video_pause', {
+                    'event_category': 'video',
+                    'event_label': 'Demo Video Paused'
+                });
+                break;
+                
+            case YT.PlayerState.ENDED:
+                gtag('event', 'video_complete', {
+                    'event_category': 'video',
+                    'event_label': 'Demo Video - Completed',
+                    'value': 100
+                });
+                break;
+        }
+    }
+
+    // Track scroll depth
+    let scrollDepthTracked = {
+        25: false,
+        50: false,
+        75: false,
+        90: false,
+        100: false
+    };
+
+    function trackScrollDepth() {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const trackableHeight = documentHeight - windowHeight;
+        const scrollPercentage = Math.floor((scrollTop / trackableHeight) * 100);
+
+        Object.keys(scrollDepthTracked).forEach(depth => {
+            if (scrollPercentage >= parseInt(depth) && !scrollDepthTracked[depth]) {
+                scrollDepthTracked[depth] = true;
+                gtag('event', 'scroll', {
+                    'event_category': 'engagement',
+                    'event_label': 'Scroll Depth',
+                    'value': parseInt(depth)
+                });
+            }
+        });
+    }
+
+    // Throttle scroll tracking
+    let scrollTimer;
+    window.addEventListener('scroll', function() {
+        if (scrollTimer) {
+            clearTimeout(scrollTimer);
+        }
+        scrollTimer = setTimeout(trackScrollDepth, 500);
+    });
+
+    // Track time on page
+    let timeOnPage = 0;
+    const timeInterval = setInterval(() => {
+        timeOnPage += 30;
+        
+        // Send event every 30 seconds up to 5 minutes
+        if (timeOnPage <= 300 && timeOnPage % 30 === 0) {
+            gtag('event', 'time_on_page', {
+                'event_category': 'engagement',
+                'event_label': timeOnPage + ' seconds',
+                'value': timeOnPage
+            });
+        }
+        
+        // Stop tracking after 5 minutes
+        if (timeOnPage >= 300) {
+            clearInterval(timeInterval);
+        }
+    }, 30000); // Every 30 seconds
+
+    // Track page visibility changes
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            gtag('event', 'page_visibility', {
+                'event_category': 'engagement',
+                'event_label': 'Page Hidden'
+            });
+        } else {
+            gtag('event', 'page_visibility', {
+                'event_category': 'engagement',
+                'event_label': 'Page Visible'
+            });
+        }
+    });
+
+    // Track CTA button hover (engagement indicator)
+    const ctaButtons = document.querySelectorAll('.btn-primary');
+    ctaButtons.forEach(button => {
+        let hoverTracked = false;
+        button.addEventListener('mouseenter', function() {
+            if (!hoverTracked) {
+                gtag('event', 'hover', {
+                    'event_category': 'engagement',
+                    'event_label': 'Primary CTA Hover',
+                    'value': 1
+                });
+                hoverTracked = true;
+            }
+        });
+    });
+
+    // Track form field interactions (if any future forms are added)
+    const formFields = document.querySelectorAll('input, textarea, select');
+    formFields.forEach(field => {
+        field.addEventListener('focus', function() {
+            gtag('event', 'form_interaction', {
+                'event_category': 'engagement',
+                'event_label': 'Field Focus - ' + (this.name || this.id || 'unknown')
+            });
+        }, { once: true }); // Only track first interaction
+    });
+});
+</script>
 </head>
 <body>
     <!-- Header -->
