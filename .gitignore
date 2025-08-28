@@ -1,0 +1,6 @@
+
+# Claude Checkpoints
+.claudecheckpoints/
+.clauderc.local
+*.checkpoint
+CLAUDE.md

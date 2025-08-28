@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkpoints for Claude Code - Never lose your work again</title>
+    <meta name="description" content="Automatic version control and checkpoint management for Claude Code projects. Track changes, create instant checkpoints, and restore previous states with confidence.">
+    <meta property="og:title" content="Checkpoints for Claude Code">
+    <meta property="og:description" content="The essential companion app for developers using Claude AI. Seamlessly track all code changes and never lose your work.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        nav {
+            padding: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #667eea;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 80px;
+            text-align: center;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* App Store Badge */
+        .app-store-badge {
+            display: inline-block;
+            margin-top: 1rem;
+        }
+        
+        .app-store-badge img {
+            height: 60px;
+        }
+        
+        /* Features Section */
+        .features {
+            background: white;
+            padding: 80px 0;
+            border-radius: 40px 40px 0 0;
+            margin-top: -40px;
+            position: relative;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .feature-card {
+            padding: 2rem;
+            border-radius: 16px;
+            background: #f8f9fa;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+        }
+        
+        /* How It Works Section */
+        .how-it-works {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+        
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .step {
+            text-align: center;
+        }
+        
+        .step-number {
+            display: inline-flex;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .step h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .step p {
+            color: #666;
+        }
+        
+        /* MCP Integration Section */
+        .mcp-section {
+            padding: 80px 0;
+            background: white;
+        }
+        
+        .mcp-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .mcp-section .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+        
+        .code-example {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 2rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-bottom: 2rem;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+        
+        .code-comment {
+            color: #608b4e;
+        }
+        
+        .code-function {
+            color: #dcdcaa;
+        }
+        
+        .code-string {
+            color: #ce9178;
+        }
+        
+        /* Video Section */
+        .video-container {
+            margin: 3rem auto;
+            max-width: 900px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.1);
+            padding: 4px;
+        }
+        
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #000;
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .video-label {
+            text-align: center;
+            color: white;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+        
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                justify-content: center;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* Screenshot carousel */
+        .screenshots {
+            padding: 60px 0;
+            background: white;
+        }
+        
+        .screenshots h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+        }
+        
+        .screenshot-carousel {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            padding: 1rem 0;
+            scroll-snap-type: x mandatory;
+        }
+        
+        .screenshot {
+            flex: 0 0 auto;
+            width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            scroll-snap-align: center;
+            background: #f0f0f0;
+            padding: 1rem;
+            text-align: center;
+            color: #666;
+        }
+        
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">✓ Checkpoints</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#mcp">MCP Integration</a></li>
+                <li><a href="https://apps.apple.com/no/app/checkpoints-for-claude-code/id6751541546?l=nb&mt=12">Download</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container animate-fade-in">
+            <h1>Never Lose Your Work Again</h1>
+            <p class="subtitle">Automatic version control for Claude Code projects</p>
+            <div class="hero-buttons">
+                <a href="https://apps.apple.com/no/app/checkpoints-for-claude-code/id6751541546?l=nb&mt=12" class="btn btn-primary">
+                    <span>🍎</span> Download for Mac
+                </a>
+                <a href="#features" class="btn btn-secondary">Learn More</a>
+            </div>
+            <p style="opacity: 0.9; margin-bottom: 1rem;">✨ Free to use • macOS 13.5+</p>
+            <div class="app-store-badge">
+                <a href="https://apps.apple.com/no/app/checkpoints-for-claude-code/id6751541546?l=nb&mt=12">
+                    <svg width="180" height="60" viewBox="0 0 180 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="180" height="60" rx="12" fill="black"/>
+                        <text x="90" y="25" text-anchor="middle" fill="white" font-size="11" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Download on the</text>
+                        <text x="90" y="45" text-anchor="middle" fill="white" font-size="20" font-weight="600" font-family="-apple-system, BlinkMacSystemFont, sans-serif">Mac App Store</text>
+                    </svg>
+                </a>
+            </div>
+            
+            <!-- Demo Video -->
+            <div class="video-label">🎬 Watch it in action</div>
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/0lNL4K-75PE" 
+                        title="Claude Checkpoints Demo"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Everything You Need for Safe Coding</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Automatic Change Detection</h3>
+                    <p>Continuously monitors your entire project for file changes. No setup required - just select your project folder and start coding.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <h3>One-Click Checkpoints</h3>
+                    <p>Create instant snapshots of your project state before making risky changes. Each checkpoint captures all files and their contents.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Visual Diff Viewer</h3>
+                    <p>See exactly what changed between checkpoints with our built-in diff viewer. Track additions, modifications, and deletions at a glance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏰</div>
+                    <h3>Time Travel for Code</h3>
+                    <p>Instantly restore your project to any previous checkpoint. Perfect for experimenting with confidence or recovering from mistakes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Claude Integration</h3>
+                    <p>Seamlessly integrates with Claude Desktop through MCP protocol. Automatic checkpoints when tasks complete.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📁</div>
+                    <h3>Full Project Backup</h3>
+                    <p>Every checkpoint includes a complete backup of all project files. Your work is always safe and recoverable.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2>Simple Workflow, Powerful Protection</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Select Project</h3>
+                    <p>Choose your project folder in the Checkpoints app</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Start Coding</h3>
+                    <p>Work with Claude Code as usual - changes are tracked automatically</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Auto Checkpoint</h3>
+                    <p>Checkpoints are created automatically when tasks complete</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Restore Anytime</h3>
+                    <p>One click to restore any previous state if needed</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MCP Integration Section -->
+    <section class="mcp-section" id="mcp">
+        <div class="container">
+            <h2>Seamless MCP Integration</h2>
+            <p class="subtitle">Works automatically with Claude Desktop through Model Context Protocol</p>
+            
+            <div class="code-example">
+                <span class="code-comment"># Claude automatically uses these MCP tools:</span><br><br>
+                <span class="code-function">update_task_status</span>(<span class="code-string">"Fix login bug"</span>, <span class="code-string">"in_progress"</span>)<br>
+                <span class="code-comment"># Work begins, changes tracked...</span><br><br>
+                <span class="code-function">update_task_status</span>(<span class="code-string">"Fix login bug"</span>, <span class="code-string">"completed"</span>)<br>
+                <span class="code-comment"># Checkpoint created automatically!</span><br><br>
+                <span class="code-function">restore_checkpoint</span>(<span class="code-string">"checkpoint_id"</span>)<br>
+                <span class="code-comment"># Instant restoration if needed</span>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🔌 Auto-Connect</h3>
+                    <p>MCP server starts automatically on port 8765. Claude Desktop connects instantly when you open a project.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📝 Task Tracking</h3>
+                    <p>Every task start and completion is tracked. Checkpoints are created automatically at key moments.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔄 Full Control</h3>
+                    <p>Claude can list checkpoints, view diffs, and restore previous states through MCP commands.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section class="screenshots">
+        <div class="container">
+            <h2>See It In Action</h2>
+            <div class="screenshot-carousel">
+                <div class="screenshot">
+                    <div style="height: 400px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; color: white;">
+                        <div>
+                            <h3>Main Interface</h3>
+                            <p>Clean, intuitive checkpoint management</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="screenshot">
+                    <div style="height: 400px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; color: white;">
+                        <div>
+                            <h3>Diff Viewer</h3>
+                            <p>Visual comparison between checkpoints</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="screenshot">
+                    <div style="height: 400px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; color: white;">
+                        <div>
+                            <h3>MCP Integration</h3>
+                            <p>Seamless Claude Desktop connection</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div>
+                <p>&copy; 2025 Checkpoints for Claude Code</p>
+                <p>Created by Morten Punnerud-Engelstad</p>
+            </div>
+            <ul class="footer-links">
+                <li><a href="https://apps.apple.com/no/app/checkpoints-for-claude-code/id6751541546?l=nb&mt=12">Mac App Store</a></li>
+                <li><a href="mailto:support@checkpoints-app.com">Support</a></li>
+                <li><a href="#privacy">Privacy</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out';
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards and steps
+        document.querySelectorAll('.feature-card, .step').forEach(el => {
+            el.style.opacity = '0';
+            observer.observe(el);
+        });
+
+        // Header background on scroll
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html>
