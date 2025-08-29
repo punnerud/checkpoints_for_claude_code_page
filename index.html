@@ -329,8 +329,10 @@
         .social-proof-badges {
             display: flex;
             justify-content: center;
+            align-items: flex-start;
             gap: 1.5rem;
-            margin-top: 3rem;
+            margin-top: 2rem;
+            margin-bottom: 3rem;
             flex-wrap: wrap;
         }
         
@@ -346,13 +348,14 @@
         .badge-content {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
+            height: 54px;
         }
         
         .badge-link:hover .badge-content {
@@ -361,16 +364,16 @@
         }
         
         .hn-logo {
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             background: #ff6600;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.5rem;
-            border-radius: 8px;
+            font-size: 1.2rem;
+            border-radius: 6px;
             font-family: 'Verdana', sans-serif;
         }
         
@@ -394,12 +397,21 @@
         
         .badge-title {
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
         
         .badge-subtitle {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             opacity: 0.9;
+        }
+        
+        .ph-embed-badge {
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+        
+        .ph-embed-badge:hover {
+            transform: translateY(-3px);
         }
         
         /* Footer */
@@ -638,13 +650,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Track Product Hunt badge clicks
-    const phBadge = document.querySelector('.ph-badge');
-    if (phBadge) {
-        phBadge.addEventListener('click', function(e) {
+    // Track Product Hunt embed badge clicks
+    const phEmbedBadge = document.querySelector('.ph-embed-badge');
+    if (phEmbedBadge) {
+        phEmbedBadge.addEventListener('click', function(e) {
             gtag('event', 'click', {
                 'event_category': 'social_proof',
-                'event_label': 'Product Hunt - Featured',
+                'event_label': 'Product Hunt - Featured Badge',
                 'value': 1
             });
         });
@@ -878,19 +890,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </a>
             </div>
             
-            <!-- Demo Video -->
-            <div class="video-label">🎬 Watch it in action</div>
-            <div class="video-container">
-                <div class="video-wrapper">
-                    <iframe 
-                        src="https://www.youtube.com/embed/0lNL4K-75PE" 
-                        title="Claude Checkpoints Demo"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
-            
             <!-- Social Proof Badges -->
             <div class="social-proof-badges">
                 <a href="https://news.ycombinator.com/item?id=45050090" target="_blank" class="badge-link hn-badge">
@@ -902,15 +901,22 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 </a>
-                <a href="https://www.producthunt.com/products/never-lose-your-work-again" target="_blank" class="badge-link ph-badge">
-                    <div class="badge-content">
-                        <span class="ph-logo">P</span>
-                        <div class="badge-text">
-                            <span class="badge-title">Product Hunt</span>
-                            <span class="badge-subtitle">Featured Product</span>
-                        </div>
-                    </div>
+                <a href="https://www.producthunt.com/products/never-lose-your-work-again?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-never&#0045;lose&#0045;your&#0045;work&#0045;again" target="_blank" class="ph-embed-badge">
+                    <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1010439&theme=light&t=1756468976425" alt="Never&#0032;lose&#0032;your&#0032;work&#0032;again&#0032; - Checkpoints&#0032;for&#0032;claude&#0032;code&#0032; | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" />
                 </a>
+            </div>
+            
+            <!-- Demo Video -->
+            <div class="video-label">🎬 Watch it in action:</div>
+            <div class="video-container">
+                <div class="video-wrapper">
+                    <iframe 
+                        src="https://www.youtube.com/embed/0lNL4K-75PE" 
+                        title="Claude Checkpoints Demo"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
             </div>
         </div>
     </section>
