@@ -325,6 +325,83 @@
             opacity: 0.95;
         }
         
+        /* Social Proof Badges */
+        .social-proof-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .badge-link {
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .badge-link:hover {
+            transform: translateY(-3px);
+        }
+        
+        .badge-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .badge-link:hover .badge-content {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hn-logo {
+            width: 40px;
+            height: 40px;
+            background: #ff6600;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            font-family: 'Verdana', sans-serif;
+        }
+        
+        .ph-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #da552f, #ea532a);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .badge-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .badge-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .badge-subtitle {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
         /* Footer */
         footer {
             background: #2c3e50;
@@ -548,6 +625,30 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // Track Hacker News badge clicks
+    const hnBadge = document.querySelector('.hn-badge');
+    if (hnBadge) {
+        hnBadge.addEventListener('click', function(e) {
+            gtag('event', 'click', {
+                'event_category': 'social_proof',
+                'event_label': 'Hacker News - Top Story',
+                'value': 169
+            });
+        });
+    }
+
+    // Track Product Hunt badge clicks
+    const phBadge = document.querySelector('.ph-badge');
+    if (phBadge) {
+        phBadge.addEventListener('click', function(e) {
+            gtag('event', 'click', {
+                'event_category': 'social_proof',
+                'event_label': 'Product Hunt - Featured',
+                'value': 1
+            });
+        });
+    }
 
     // Track YouTube video interactions
     let videoPlayed = false;
@@ -788,6 +889,28 @@ document.addEventListener('DOMContentLoaded', function() {
                         allowfullscreen>
                     </iframe>
                 </div>
+            </div>
+            
+            <!-- Social Proof Badges -->
+            <div class="social-proof-badges">
+                <a href="https://news.ycombinator.com/item?id=45050090" target="_blank" class="badge-link hn-badge">
+                    <div class="badge-content">
+                        <span class="hn-logo">Y</span>
+                        <div class="badge-text">
+                            <span class="badge-title">Hacker News</span>
+                            <span class="badge-subtitle">Top Story • 169 points</span>
+                        </div>
+                    </div>
+                </a>
+                <a href="https://www.producthunt.com/products/never-lose-your-work-again" target="_blank" class="badge-link ph-badge">
+                    <div class="badge-content">
+                        <span class="ph-logo">P</span>
+                        <div class="badge-text">
+                            <span class="badge-title">Product Hunt</span>
+                            <span class="badge-subtitle">Featured Product</span>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
